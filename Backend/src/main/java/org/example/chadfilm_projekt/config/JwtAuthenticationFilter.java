@@ -1,6 +1,5 @@
 package org.example.chadfilm_projekt.config;
 
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
