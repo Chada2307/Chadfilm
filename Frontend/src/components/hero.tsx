@@ -9,7 +9,7 @@ export function Hero() {
       <div 
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1688678004647-945d5aaf91c1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaW5lbWElMjB0aGVhdHJlJTIwc2NyZWVufGVufDF8fHx8MTc2MzU0MzEzNHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral')`
+          backgroundImage: `url('https://m.media-amazon.com/images/S/pv-target-images/ff6bfe1f03b54690c9ac93f940443d921a9446787b09dc23cb834139008d9aff.jpg')`
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-transparent" />
@@ -28,7 +28,7 @@ export function Hero() {
           </div>
 
           <h1 className="text-5xl md:text-7xl mb-4 text-white">
-            House
+            House M.D.
           </h1>
           
           <div className="flex items-center gap-4 mb-6">
