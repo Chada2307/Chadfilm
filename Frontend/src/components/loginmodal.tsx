@@ -1,6 +1,6 @@
-import React from "react";
+import React, { ReactEventHandler, use } from "react";
 import { Film } from "lucide-react";
-
+import { loginRequest } from "../api/auth";
 interface LoginModalProps {
     open: boolean;
     onClose: () => void;
@@ -10,11 +10,33 @@ export const LoginModal: React.FC<LoginModalProps> = ({ open, onClose }) => {
     const [mode, setMode] = React.useState<"login" | "signup">("login");
     const isLogin = mode === "login";
 
+    const[username, setUsername] = React.useState("");
+    const[password, setPassword] = React.useState("");
+    const[error, setError] = React.useState<string | null>(null);
+    
+
     React.useEffect(() => {
         if(!open) {
             setMode("login");
         }
     }, [open]);
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setError(null);
+
+        try{
+            if(isLogin) {
+                const res = await loginRequest(username,password);
+                localStorage.setItem("auth_token", res.token);
+                console.log("token :", res.token);
+            }
+            onClose();
+        }catch(err :any ){
+            setError(err.message ?? "cos jest nie wporzadku");
+        }
+    }
+
 
     if (!open) return null;
 
@@ -52,7 +74,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({ open, onClose }) => {
                     </p>
                 </div>
 
-                <form className="mt-8 space-y-5">
+                <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+
                     
                     {!isLogin && (
                         <div>
@@ -81,7 +104,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ open, onClose }) => {
 
                     <div>
                         <label className="text-xs font-medium text-neutral-400">
-                            Email Address
+                            Username
                         </label>
                         <div className="mt-1 flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2 transition focus-within:border-yellow-400/70 focus-within:bg-black/60 focus-within:ring-1 focus-within:ring-yellow-400/70">
                             <svg
@@ -95,9 +118,11 @@ export const LoginModal: React.FC<LoginModalProps> = ({ open, onClose }) => {
                                 />
                             </svg>
                             <input
-                                type="email"
+                                type="Username"
                                 className="h-8 w-full bg-transparent text-sm text-neutral-100 placeholder:text-neutral-500 outline-none border-none"
-                                placeholder="Enter your email"
+                                placeholder="Enter your login"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                             />
                         </div>
                     </div>
@@ -120,6 +145,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({ open, onClose }) => {
                                 type="password"
                                 className="h-8 w-full bg-transparent text-sm text-neutral-100 placeholder:text-neutral-500 outline-none border-none"
                                 placeholder="Enter your password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
                     </div>
