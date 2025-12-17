@@ -84,7 +84,7 @@ export function MovieDetail({
 
             { }
             <div className="flex-1 pb-4">
-              <Badge className="mb-3">{genre}</Badge>
+              <Badge variant="outline" className="rounded-full bg-black/70 text-white tracking-wide shadow-lg ring-1 ring-white/10  backdrop-blur-sm">{genre}</Badge>
               <h1 className="text-white mb-2 text-4xl font-bold">{title}</h1>
 
               <div className="flex items-center gap-6 mb-6 text-white/80">
