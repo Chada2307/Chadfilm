@@ -28,7 +28,7 @@ export function Hero() {
           </div>
 
           <h1 className="text-5xl md:text-7xl mb-4 text-white">
-            House M.D.
+            House
           </h1>
           
           <div className="flex items-center gap-4 mb-6">
