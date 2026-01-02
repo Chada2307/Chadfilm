@@ -1,15 +1,16 @@
 import { ChevronRight } from "lucide-react";
-import { MovieCard } from "./MovieCard";
+import { MovieCard } from "./moviecard";
 import { Button } from "./ui/button";
 
-export interface Movie {
-  id: string;
+interface Movie {
+  id: string | number;
   title: string;
   year: string;
   rating: number;
   runtime?: string;
   genre: string;
   imageUrl: string;
+  plot?: string;
 }
 
 interface MovieSectionProps {
@@ -20,22 +21,30 @@ interface MovieSectionProps {
 
 export function MovieSection({ title, movies, onMovieClick }: MovieSectionProps) {
   return (
-    <section className="mb-12">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-semibold text-gray-900">{title}</h2>
-        <Button variant="outline" className="gap-1 text-gray-900 border-gray-300 hover:bg-gray-100">
-          View All
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+    <section className="py-8">
+      <div className="mb-4 flex items-center justify-between px-4">
+        <h2 className="text-xl font-bold text-white">{title}</h2>
+        <button className="text-sm font-medium text-yellow-500 hover:text-yellow-400 transition-colors">
+          Zobacz wszystkie
+        </button>
       </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+      
+      <div className="flex gap-4 overflow-x-auto px-4 pb-8 scrollbar-hide snap-x">
         {movies.map((movie) => (
-          <MovieCard
-            key={movie.id}
-            {...movie}
-            onClick={() => onMovieClick(movie)}
-          />
+          <div 
+            key={movie.id} 
+            className="min-w-[160px] sm:min-w-[200px] md:min-w-[240px] snap-start"
+          >
+            <MovieCard
+              title={movie.title}
+              year={movie.year}
+              rating={movie.rating}
+              runtime={movie.runtime}
+              genre={movie.genre}
+              imageUrl={movie.imageUrl}
+              onClick={() => onMovieClick(movie)}
+            />
+          </div>
         ))}
       </div>
     </section>

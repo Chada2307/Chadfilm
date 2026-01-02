@@ -1,104 +1,67 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import { Header } from "./components/header";
 import { Hero } from "./components/hero";
 import { MovieSection } from "./components/moviesection";
-import { LoginModal } from "./components/loginmodal";
 import { MovieDetail } from "./components/MovieDetail";
 
-const trendingMovies = [
-  {
-    id: "1",
-    title: "Joker",
-    year: "2019",
-    rating: 8.2,
-    runtime: "2h 2min",
-    genre: "Drama",
-    imageUrl: "https://image.tmdb.org/t/p/w1280/opwCl56Zi8mextLETtM3d0ryVFU.jpg"
-  },
-  {
-    id: "2",
-    title: "The Dark Knight",
-    year: "2008",
-    rating: 9.2,
-    runtime: "2h 32min",
-    genre: "Action",
-    imageUrl: "https://image.tmdb.org/t/p/w1280/qJ2tW6WMUDux911r6m7haRef0WH.jpg"
-  },
-  {
-    id: "3",
-    title: "The Shawshank Redemption",
-    year: "1995",
-    rating: 9.7,
-    runtime: "2h 22min",
-    genre: "Drama",
-    imageUrl: "https://image.tmdb.org/t/p/w1280/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg"
-  },
-  {
-    id: "4",
-    title: "Fight Club",
-    year: "1999",
-    rating: 8.7,
-    runtime: "2h 19min",
-    genre: "Drama",
-    imageUrl: "https://image.tmdb.org/t/p/w1280/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg"
-  },
-  {
-    id: "5",
-    title: "Forest Gump",
-    year: "1994",
-    rating: 8.7,
-    runtime: "2h 22min",
-    genre: "Comedy",
-    imageUrl: "https://image.tmdb.org/t/p/w1280/9wlYJy01XgvIhdf651FgyJkau07.jpg"
-  },
-  {
-    id: "6",
-    title: "Bee Movie",
-    year: "2007",
-    rating: 6.7,
-    runtime: "1h 31min",
-    genre: "Family",
-    imageUrl: "https://image.tmdb.org/t/p/w1280/aWe27GmvfVYAd7p0KEtJZWwLWk5.jpg"
-  }
-];
-
-const topRatedMovies = trendingMovies;
-const comingSoonMovies = trendingMovies;
-
 function App() {
-  const [loginOpen, setLoginOpen] = useState(false);
+  
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  
   const [selectedMovie, setSelectedMovie] = useState(null);
 
+  
+  useEffect(() => {
+    fetch("http://localhost:8080/api/movies")
+      .then((res) => res.json())
+      .then((data) => {
+        
+        const mappedMovies = data.map(movie => ({
+          id: movie.movieId, 
+          title: movie.title,
+          year: movie.releaseDate ? new Date(movie.releaseDate).getFullYear().toString() : "N/A",
+          rating: movie.voteAverage || 0,
+          runtime: "N/A", 
+          genre: "Movie", 
+          imageUrl: movie.posterUrl || "https://placehold.co/600x900?text=No+Image",
+          plot: movie.description || "Brak opisu."
+        }));
+        
+        setMovies(mappedMovies);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Błąd pobierania filmów:", err);
+        setLoading(false);
+      });
+  }, []);
+
   return (
-    <div className="min-h-screen bg-background relative">
-      <Header onUserClick={() => setLoginOpen(true)} />
+    <div className="min-h-screen bg-neutral-950 relative text-white">
 
-      <LoginModal
-        open={loginOpen}
-        onClose={() => setLoginOpen(false)}
-      />
+      <Header />
 
-      { }
+      
       {selectedMovie && (
         <MovieDetail
           id={selectedMovie.id}
           title={selectedMovie.title}
           year={selectedMovie.year}
           rating={selectedMovie.rating}
-          runtime={selectedMovie.runtime || "N/A"}
+          runtime={selectedMovie.runtime}
           genre={selectedMovie.genre}
           imageUrl={selectedMovie.imageUrl}
-
+          
           onClose={() => setSelectedMovie(null)}
-
+          
           backdropUrl={selectedMovie.imageUrl}
-          plot={`To jest przykładowy opis dla filmu ${selectedMovie.title}. W pełnej aplikacji te dane będą pobierane z bazy danych lub API po kliknięciu w film.`}
+          plot={selectedMovie.plot}
           cast={[
-            { name: "Główny Aktor", character: "Postać" },
-            { name: "Drugi Aktor", character: "Postać" },
-            { name: "Trzeci Aktor", character: "Postać" }
+
+            { name: "Obsada", character: "Wkrótce" },
           ]}
         />
       )}
@@ -106,21 +69,27 @@ function App() {
       <Hero />
 
       <main className="container mx-auto px-4 py-12">
-        <MovieSection
-          title="Trending Now"
-          movies={trendingMovies}
-          onMovieClick={setSelectedMovie}
-        />
-        <MovieSection
-          title="Top Rated"
-          movies={topRatedMovies}
-          onMovieClick={setSelectedMovie}
-        />
-        <MovieSection
-          title="Coming Soon"
-          movies={comingSoonMovies}
-          onMovieClick={setSelectedMovie}
-        />
+        {loading ? (
+           <div className="text-center text-gray-500">Ładowanie filmów z bazy...</div>
+        ) : (
+          <>
+            {/* Sekcja 1: Dane z bazy */}
+            <MovieSection
+              title="Popularne teraz (z Bazy Danych)"
+              movies={movies}
+              onMovieClick={setSelectedMovie}
+            />
+
+            {/* Sekcja 2: Na razie duplikujemy to samo, żeby strona nie była pusta
+                Docelowo zrobisz endpoint /api/movies/top-rated */}
+            <MovieSection
+              title="Top Rated"
+              movies={movies}
+              //movies={movies.filter(m => m.rating > 7).slice(0, 5)} // Przykładowy filtr
+              onMovieClick={setSelectedMovie}
+            />
+          </>
+        )}
       </main>
     </div>
   );

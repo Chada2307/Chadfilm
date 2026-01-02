@@ -32,6 +32,14 @@ public class Movie {
     @Column(name = "PosterURL")
     private String posterUrl;
 
+    @Column(name = "TmdbID", unique = true)
+    private Long tmdbId;
+
+    @Column(name = "VoteAverage")
+    private Double voteAverage;
+
+
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "Movie_Genres",
@@ -103,4 +111,11 @@ public class Movie {
     public void setGenres(Set<Genre> genres) {
         this.genres = genres;
     }
+
+    public Long getTmdbId() { return tmdbId; }
+    public void setTmdbId(Long tmdbId) { this.tmdbId = tmdbId; }
+
+    public Double getVoteAverage() { return voteAverage; }
+    public void setVoteAverage(Double voteAverage) { this.voteAverage = voteAverage; }
+
 }

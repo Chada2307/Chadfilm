@@ -6,17 +6,20 @@ import { LoginModal } from "./loginmodal";
 import { RegisterModal } from "./RegisterModal";
 
 export function Header() {
-
   const [isLoginOpen, setLoginOpen] = useState(false);
   const [isRegisterOpen, setRegisterOpen] = useState(false);
-  
   const [username, setUsername] = useState<string | null>(null);
+
+  //scrooll efekt
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUsername(storedUser);
-    }
+    if (storedUser) setUsername(storedUser);
+
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleLogout = () => {
@@ -28,57 +31,65 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      
+      <header 
+        className={`sticky top-0 z-50 w-full border-b border-white/10 transition-all duration-300 ${
+          scrolled ? "bg-black/90 backdrop-blur-md shadow-lg" : "bg-gradient-to-b from-black/80 to-transparent border-transparent"
+        }`}
+      >
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             
+            {/* LOGO */}
             <div className="flex items-center gap-8">
-              <a href="/" className="flex items-center gap-2">
-                <Film className="h-8 w-8 text-yellow-500" />
-                <span className="text-2xl font-bold tracking-tight">ChadFilm</span>
+              <a href="/" className="flex items-center gap-2 group">
+                
+                <Film className="h-8 w-8 text-yellow-500 group-hover:rotate-12 transition-transform" />
+                <span className="text-2xl font-bold tracking-tight text-white group-hover:text-yellow-500 transition-colors">
+                  ChadFilm
+                </span>
               </a>
 
+              
               <nav className="hidden md:flex items-center gap-6">
-                <a href="#" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
-                  Movies
-                </a>
-                <a href="#" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
-                  TV Series
-                </a>
-                <a href="#" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
-                  Top Rated
-                </a>
-                <a href="#" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
-                  Coming Soon
-                </a>
+                {["Movies", "TV Series", "Top Rated", "Coming Soon"].map((item) => (
+                  <a 
+                    key={item}
+                    href="#" 
+                    className="text-sm font-medium text-gray-300 hover:text-white hover:underline decoration-yellow-500 underline-offset-4 transition-all"
+                  >
+                    {item}
+                  </a>
+                ))}
               </nav>
             </div>
 
+            {/* prawa strona */}
             <div className="flex items-center gap-4">
-              <div className="relative hidden sm:block">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <div className="relative hidden sm:block group">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400 group-focus-within:text-yellow-500 transition-colors" />
+                
                 <Input
                   type="search"
                   placeholder="Search movies..."
-                  className="pl-9 w-64 bg-gray-50"
+                  className="pl-9 w-64 bg-white/10 border-transparent text-white placeholder:text-gray-400 focus:bg-white/20 focus:ring-1 focus:ring-yellow-500 transition-all rounded-full"
                 />
               </div>
               
-              <Button variant="ghost" size="icon" className="md:hidden">
+              <Button variant="ghost" size="icon" className="md:hidden text-white">
                 <Search className="h-5 w-5" />
               </Button>
 
               {username ? (
-                <div className="flex items-center gap-2">
-                  <span className="hidden md:block text-sm font-medium text-gray-700">
+                <div className="flex items-center gap-3">
+                  <span className="hidden md:block text-sm font-medium text-yellow-500">
                     {username}
                   </span>
                   <Button 
                     variant="ghost" 
                     size="icon" 
                     onClick={handleLogout}
-                    title="Wyloguj się"
-                    className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                    className="text-gray-400 hover:text-red-500 hover:bg-white/5"
                   >
                     <LogOut className="h-5 w-5" />
                   </Button>
@@ -88,15 +99,11 @@ export function Header() {
                   variant="ghost"
                   size="icon"
                   onClick={() => setLoginOpen(true)}
-                  title="Zaloguj się"
+                  className="text-white hover:text-yellow-500 hover:bg-white/5"
                 >
                   <User className="h-5 w-5" />
                 </Button>
               )}
-
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu className="h-5 w-5" />
-              </Button>
             </div>
           </div>
         </div>

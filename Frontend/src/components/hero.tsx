@@ -4,7 +4,7 @@ import { Badge } from "./ui/badge";
 
 export function Hero() {
   return (
-    <div className="relative h-[600px] w-full overflow-hidden">
+    <div className="relative h-[800px] w-full overflow-hidden">
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center"
@@ -28,7 +28,7 @@ export function Hero() {
           </div>
 
           <h1 className="text-5xl md:text-7xl mb-4 text-white">
-            House M.D.
+            House
           </h1>
           
           <div className="flex items-center gap-4 mb-6">

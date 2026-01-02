@@ -4,3 +4,14 @@ body {
   min-width: 100%;
   min-height: 100vh;
 }
+
+/* Ukrywanie scrollbara dla Chrome, Safari i Opera */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Ukrywanie scrollbara dla IE, Edge i Firefox */
+.scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
