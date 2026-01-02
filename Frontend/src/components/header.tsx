@@ -7,9 +7,10 @@ import { RegisterModal } from "./RegisterModal";
 
 interface HeaderProps {
   onSearch?: (query: string) => void;
+  onNavigate?: (view: "home" | "my-list") => void;
 }
 
-export function Header({ onSearch }: HeaderProps) {
+export function Header({ onSearch, onNavigate }: HeaderProps) {
 
   const [isLoginOpen, setLoginOpen] = useState(false);
   const [isRegisterOpen, setRegisterOpen] = useState(false);
@@ -57,15 +58,26 @@ export function Header({ onSearch }: HeaderProps) {
 
               
               <nav className="hidden md:flex items-center gap-6">
-                {["Movies", "TV Series", "Top Rated", "Coming Soon"].map((item) => (
-                  <a 
-                    key={item}
+                <a 
                     href="#" 
+                    onClick={(e) => { e.preventDefault(); onNavigate?.("home"); }}
                     className="text-sm font-medium text-gray-300 hover:text-white hover:underline decoration-yellow-500 underline-offset-4 transition-all"
+                >
+                    Movies
+                </a>
+
+                {username && (
+                  <a 
+                      href="#" 
+                      onClick={(e) => { e.preventDefault(); onNavigate?.("my-list"); }}
+                      className="text-sm font-medium text-gray-300 hover:text-white hover:underline decoration-yellow-500 underline-offset-4 transition-all"
                   >
-                    {item}
+                      My List
                   </a>
-                ))}
+                )}
+                
+                <a href="#" className="text-sm font-medium text-gray-300 hover:text-white hover:underline decoration-yellow-500 underline-offset-4 transition-all">TV Series</a>
+                <a href="#" className="text-sm font-medium text-gray-300 hover:text-white hover:underline decoration-yellow-500 underline-offset-4 transition-all">Top Rated</a>
               </nav>
             </div>
 

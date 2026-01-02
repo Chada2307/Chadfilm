@@ -4,6 +4,7 @@ import { Header } from "./components/header";
 import { Hero } from "./components/hero";
 import { MovieSection } from "./components/moviesection";
 import { MovieDetail } from "./components/MovieDetail";
+import { MyList } from "./components/MyList";
 
 function App() {
   
@@ -11,7 +12,10 @@ function App() {
   const [loading, setLoading] = useState(true);  
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [searchQuery, setSelectedQuery] = useState("");
-  
+  const [currentView, setCurrentView] = useState("home"); 
+  const [heroMovie, setHeroMovie] = useState(null);
+
+
   useEffect(() => {
 
   setLoading(true);
@@ -36,6 +40,10 @@ function App() {
         }));
         
         setMovies(mappedMovies);
+        if (!searchQuery && mappedMovies.length > 0) {
+            const randomMovie = mappedMovies[Math.floor(Math.random() * mappedMovies.length)];
+            setHeroMovie(randomMovie);
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -47,7 +55,10 @@ function App() {
   return (
     <div className="min-h-screen bg-neutral-950 relative text-white">
 
-      <Header onSearch={setSelectedQuery}/>
+      <Header 
+        onSearch={(q) => { setSearchQuery(q); setCurrentView("home"); }} 
+        onNavigate={(view) => { setCurrentView(view); setSearchQuery(""); }}
+      />
 
       
       {selectedMovie && (
@@ -70,8 +81,15 @@ function App() {
           ]}
         />
       )}
-
-      {!searchQuery && <Hero />}
+      {currentView === "my-list" && localStorage.getItem("auth_token") ? (
+        <MyList onMovieClick={setSelectedMovie}/>
+      ):( 
+      <>
+      {!searchQuery && 
+        <Hero 
+            movie={heroMovie} 
+            onInfoClick={() => setSelectedMovie(heroMovie)}
+        />}
 
       <main className="container mx-auto px-4 py-12">
         {loading ? (
@@ -96,6 +114,8 @@ function App() {
           </>
         )}
       </main>
+      </>
+      )}
     </div>
   );
 }
