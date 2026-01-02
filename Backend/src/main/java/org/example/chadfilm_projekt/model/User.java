@@ -24,6 +24,11 @@ public class User {
     @Column(name = "CreatedAt", nullable = true, updatable = false)
     private LocalDateTime createdAt;
 
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
     public Integer getUserId() {
         return userId;
     }

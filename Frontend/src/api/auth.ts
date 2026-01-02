@@ -37,3 +37,26 @@ export async function loginRequest(username: string, password:string):Promise<Au
     }
     return res.json();
 }
+
+export async function registerRequest (username: string, email: string, password: string): Promise<AuthResponse>{
+    
+    const res = await fetch(`${API_URL}/api/register`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({username, email, password}),
+    });
+
+    if(!res.ok){
+        let message = "Registration failed";
+        try{
+            const data = await res.json();
+            if (data.message) message = data.message;
+        } catch {
+            console.log("blad parsowania bledu rejestracji");
+        }
+        throw new Error(message);
+    }
+    return res.json();
+}

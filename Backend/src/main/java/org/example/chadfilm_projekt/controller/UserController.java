@@ -23,19 +23,19 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
-        try{
-            User newUser = userService.registerUser(
-                    registerRequest.getUsername(),
-                    registerRequest.getEmail(),
-                    registerRequest.getPassword()
-            );
-            newUser.setPasswordHash(null);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
-        }catch(RuntimeException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
+//        try{
+//            User newUser = userService.registerUser(
+//                    registerRequest.getUsername(),
+//                    registerRequest.getEmail(),
+//                    registerRequest.getPassword()
+//            );
+//            newUser.setPasswordHash(null);
+//            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+//        }catch(RuntimeException e){
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+//        }
+//    }
 
 }
