@@ -2,6 +2,8 @@ package org.example.chadfilm_projekt.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "Users")
@@ -23,6 +25,30 @@ public class User {
 
     @Column(name = "CreatedAt", nullable = true, updatable = false)
     private LocalDateTime createdAt;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_favorites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id")
+    )
+    private Set<Movie> favorites = new HashSet<>();
+
+    public Set<Movie> getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(Set<Movie> favorites) {
+        this.favorites = favorites;
+    }
+
+    public void addFavorite(Movie movie) {
+        this.favorites.add(movie);
+    }
+
+    public void removeFavorite(Movie movie) {
+        this.favorites.remove(movie);
+    }
 
     @PrePersist
     protected void onCreate() {

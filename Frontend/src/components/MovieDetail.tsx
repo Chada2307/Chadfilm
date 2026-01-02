@@ -1,7 +1,9 @@
 import { X, Star, Clock, Calendar, Play, Plus, Heart, Share2 } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { addToFavorites, checkIsFavorite, removeFromFavorites } from "../api/favorites";
 
 interface Cast {
   name: string;
@@ -33,6 +35,7 @@ interface MovieDetailProps {
 }
 
 export function MovieDetail({
+  id,
   title,
   year,
   rating,
@@ -46,6 +49,37 @@ export function MovieDetail({
   reviews,
   onClose
 }: MovieDetailProps) {
+
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isLoadingFav, setIsLoadingFav] = useState(false);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      const status = await checkIsFavorite(id);
+      setIsFavorite(status);
+    };
+    checkStatus();
+  }, [id]);
+
+  const handleToggleFavourite = async () => {
+    setIsLoadingFav(true);
+    try{
+      if(isFavorite){
+        await removeFromFavorites(id);
+        setIsFavorite(false);
+      }else{
+        await addToFavorites(id);
+        setIsFavorite(true);
+      }
+    }catch(error){
+      console.error("blad zmiany statusu ulubionych: ", error);
+      alert("musisz byc zalogowany");
+    }finally{
+      setIsLoadingFav(false);
+    }
+  }
+
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/95 backdrop-blur-sm">
       { }
@@ -112,8 +146,18 @@ export function MovieDetail({
                   <Plus className="h-5 w-5" />
                   Watchlist
                 </Button>
-                <Button size="lg" variant="outline" className="gap-2 bg-white/10 border-white/20 text-white hover:bg-white/20">
-                  <Heart className="h-5 w-5" />
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={handleToggleFavourite}
+                  disabled={isLoadingFav}
+                  className={`gap-2 border transition-all ${
+                    isFavorite
+                      ? "bg-red-500/20 border-red-500 text-red-500 hover:bg-red-500/30" // Styl gdy polubione
+                      : "bg-white/10 border-white/20 text-white hover:bg-white/20"       // Styl domyślny
+                  }`}
+                >
+                  <Heart className={`h-5 w-5 ${isFavorite ? "fill-current" : ""}`} />
                 </Button>
                 <Button size="lg" variant="outline" className="gap-2 bg-white/10 border-white/20 text-white hover:bg-white/20">
                   <Share2 className="h-5 w-5" />

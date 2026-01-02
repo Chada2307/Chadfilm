@@ -5,7 +5,12 @@ import { Input } from "./ui/input";
 import { LoginModal } from "./loginmodal";
 import { RegisterModal } from "./RegisterModal";
 
-export function Header() {
+interface HeaderProps {
+  onSearch?: (query: string) => void;
+}
+
+export function Header({ onSearch }: HeaderProps) {
+
   const [isLoginOpen, setLoginOpen] = useState(false);
   const [isRegisterOpen, setRegisterOpen] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
@@ -73,6 +78,7 @@ export function Header() {
                   type="search"
                   placeholder="Search movies..."
                   className="pl-9 w-64 bg-white/10 border-transparent text-white placeholder:text-gray-400 focus:bg-white/20 focus:ring-1 focus:ring-yellow-500 transition-all rounded-full"
+                  onChange={(e) => onSearch && onSearch(e.target.value)}
                 />
               </div>
               
