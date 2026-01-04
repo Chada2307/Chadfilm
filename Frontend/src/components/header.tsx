@@ -7,7 +7,7 @@ import { RegisterModal } from "./RegisterModal";
 
 interface HeaderProps {
   onSearch?: (query: string) => void;
-  onNavigate?: (view: "home" | "my-list") => void;
+  onNavigate?: (view: "home" | "my-list" | "all-movies") => void;
 }
 
 export function Header({ onSearch, onNavigate }: HeaderProps) {
@@ -60,7 +60,7 @@ export function Header({ onSearch, onNavigate }: HeaderProps) {
               <nav className="hidden md:flex items-center gap-6">
                 <a 
                     href="#" 
-                    onClick={(e) => { e.preventDefault(); onNavigate?.("home"); }}
+                    onClick={(e) => { e.preventDefault(); onNavigate?.("all-movies"); }}
                     className="text-sm font-medium text-gray-300 hover:text-white hover:underline decoration-yellow-500 underline-offset-4 transition-all"
                 >
                     Movies

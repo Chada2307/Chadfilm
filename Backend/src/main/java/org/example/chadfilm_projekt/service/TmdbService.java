@@ -35,26 +35,34 @@ public class TmdbService {
     }
 
     @Transactional
-    public void importPopularMovies() {
+    public void importPopularMovies(int numberOfPages) {
 
-        String url = String.format("%s/movie/popular?api_key=%s&language=pl-PL", baseUrl, apiKey);
+        for(int page = 1; page <= numberOfPages; page++) {
 
-        TmdbResponse response = restTemplate.getForObject(url, TmdbResponse.class);
+            String url = String.format("%s/movie/popular?api_key=%s&language=pl-PL&page=%d",
+                    baseUrl, apiKey, page);
+            try {
+                TmdbResponse response = restTemplate.getForObject(url, TmdbResponse.class);
 
-        if (response != null && response.getResults() != null) {
-            List<Movie> moviesToSave = new ArrayList<>();
+                if (response != null && response.getResults() != null) {
+                    List<Movie> moviesToSave = new ArrayList<>();
 
-            for (TmdbMovieResult dto : response.getResults()) {
-                if (!movieRepository.existsByTmdbId(dto.getTmdbId())) {
-                    Movie movie = mapDtoToEntity(dto);
-                    moviesToSave.add(movie);
+                    for (TmdbMovieResult dto : response.getResults()) {
+                        if (!movieRepository.existsByTmdbId(dto.getTmdbId())) {
+                            Movie movie = mapDtoToEntity(dto);
+                            moviesToSave.add(movie);
+                        }
+                    }
+                    if (!moviesToSave.isEmpty()) {
+                        movieRepository.saveAll(moviesToSave);
+                        System.out.println("Zaimportowano " + moviesToSave.size() + " nowych filmów.");
+                    } else {
+                        System.out.println("Brak nowych filmów do zaimportowania.");
+                    }
                 }
-            }
-            if (!moviesToSave.isEmpty()) {
-                movieRepository.saveAll(moviesToSave);
-                System.out.println("Zaimportowano " + moviesToSave.size() + " nowych filmów.");
-            } else {
-                System.out.println("Brak nowych filmów do zaimportowania.");
+                Thread.sleep(100);
+            }catch(Exception e) {
+                System.err.println("Blad podczas importu strony " + page + ": " + e.getMessage());
             }
         }
     }
@@ -77,11 +85,12 @@ public class TmdbService {
                 System.out.println("Nie udało się sparsować daty dla filmu: " + dto.getTitle());
             }
         }
-
-        // Uwaga: Endpoint /popular nie zwraca "DurationMinutes".
-        // Do tego potrzebne byłoby oddzielne zapytanie o szczegóły filmu (Details endpoint).
-        // Na razie zostawiamy null.
-
         return movie;
+    }
+
+    public Object getMovieDetails(Long tmdbId) {
+        String url = String.format("%s/movie/%d?api_key=%s&language=pl-PL&append_to_response=credits,videos",
+                baseUrl, tmdbId, apiKey);
+        return restTemplate.getForObject(url, Object.class);
     }
 }
