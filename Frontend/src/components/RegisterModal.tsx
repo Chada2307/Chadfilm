@@ -45,7 +45,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, s
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={onClose}>
             <div className="relative mx-4 w-full max-w-md rounded-3xl border border-white/10 bg-neutral-950/95 px-10 py-10 text-neutral-100 shadow-2xl shadow-black/80" onClick={(e) => e.stopPropagation()}>
-                
+
                 <button onClick={onClose} className="absolute right-6 top-6 rounded-full p-2 hover:bg-white/10 transition-all">
                     <X className="h-5 w-5 text-neutral-400" />
                 </button>
@@ -59,7 +59,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, s
                 </div>
 
                 {error && <div className="mt-4 p-2 bg-red-500/10 border border-red-500/20 rounded text-red-500 text-xs text-center">{error}</div>}
-                
+
                 {success ? (
                     <div className="mt-8 text-center">
                         <div className="text-green-400 text-lg font-bold mb-2">Sukces!</div>
