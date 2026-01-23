@@ -6,7 +6,7 @@ COPY src ./src
 
 RUN mvn clean package -DskipTests
 
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 COPY --from=build /target/*.jar app.jar
