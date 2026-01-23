@@ -7,7 +7,7 @@ import { RegisterModal } from "./RegisterModal";
 
 interface HeaderProps {
   onSearch?: (query: string) => void;
-  onNavigate?: (view: "home" | "my-list" | "all-movies") => void;
+  onNavigate?: (view: "home" | "my-list" | "all-movies" | "profile") => void;
 }
 
 export function Header({ onSearch, onNavigate }: HeaderProps) {
@@ -37,45 +37,44 @@ export function Header({ onSearch, onNavigate }: HeaderProps) {
 
   return (
     <>
-      
-      <header 
-        className={`sticky top-0 z-50 w-full border-b border-white/10 transition-all duration-300 ${
-          scrolled ? "bg-black/90 backdrop-blur-md shadow-lg" : "bg-gradient-to-b from-black/80 to-transparent border-transparent"
-        }`}
+
+      <header
+        className={`sticky top-0 z-50 w-full border-b border-white/10 transition-all duration-300 ${scrolled ? "bg-black/90 backdrop-blur-md shadow-lg" : "bg-gradient-to-b from-black/80 to-transparent border-transparent"
+          }`}
       >
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
-            
+
             {/* LOGO */}
             <div className="flex items-center gap-8">
               <a href="/" className="flex items-center gap-2 group">
-                
+
                 <Film className="h-8 w-8 text-yellow-500 group-hover:rotate-12 transition-transform" />
                 <span className="text-2xl font-bold tracking-tight text-white group-hover:text-yellow-500 transition-colors">
                   ChadFilm
                 </span>
               </a>
 
-              
+
               <nav className="hidden md:flex items-center gap-6">
-                <a 
-                    href="#" 
-                    onClick={(e) => { e.preventDefault(); onNavigate?.("all-movies"); }}
-                    className="text-sm font-medium text-gray-300 hover:text-white hover:underline decoration-yellow-500 underline-offset-4 transition-all"
+                <a
+                  href="#"
+                  onClick={(e) => { e.preventDefault(); onNavigate?.("all-movies"); }}
+                  className="text-sm font-medium text-gray-300 hover:text-white hover:underline decoration-yellow-500 underline-offset-4 transition-all"
                 >
-                    Movies
+                  Movies
                 </a>
 
                 {username && (
-                  <a 
-                      href="#" 
-                      onClick={(e) => { e.preventDefault(); onNavigate?.("my-list"); }}
-                      className="text-sm font-medium text-gray-300 hover:text-white hover:underline decoration-yellow-500 underline-offset-4 transition-all"
+                  <a
+                    href="#"
+                    onClick={(e) => { e.preventDefault(); onNavigate?.("my-list"); }}
+                    className="text-sm font-medium text-gray-300 hover:text-white hover:underline decoration-yellow-500 underline-offset-4 transition-all"
                   >
-                      My List
+                    My List
                   </a>
                 )}
-                
+
                 <a href="#" className="text-sm font-medium text-gray-300 hover:text-white hover:underline decoration-yellow-500 underline-offset-4 transition-all">TV Series</a>
                 <a href="#" className="text-sm font-medium text-gray-300 hover:text-white hover:underline decoration-yellow-500 underline-offset-4 transition-all">Top Rated</a>
               </nav>
@@ -85,7 +84,7 @@ export function Header({ onSearch, onNavigate }: HeaderProps) {
             <div className="flex items-center gap-4">
               <div className="relative hidden sm:block group">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400 group-focus-within:text-yellow-500 transition-colors" />
-                
+
                 <Input
                   type="search"
                   placeholder="Search movies..."
@@ -93,24 +92,50 @@ export function Header({ onSearch, onNavigate }: HeaderProps) {
                   onChange={(e) => onSearch && onSearch(e.target.value)}
                 />
               </div>
-              
+
               <Button variant="ghost" size="icon" className="md:hidden text-white">
                 <Search className="h-5 w-5" />
               </Button>
 
               {username ? (
-                <div className="flex items-center gap-3">
-                  <span className="hidden md:block text-sm font-medium text-yellow-500">
-                    {username}
-                  </span>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={handleLogout}
-                    className="text-gray-400 hover:text-red-500 hover:bg-white/5"
+                <div className="relative group/menu">
+                  <button
+                    className="flex items-center gap-3 hover:bg-white/5 px-3 py-2 rounded-full transition-colors"
                   >
-                    <LogOut className="h-5 w-5" />
-                  </Button>
+                    <span className="hidden md:block text-sm font-medium text-yellow-500">
+                      {username}
+                    </span>
+                    <div className="w-8 h-8 rounded-full bg-neutral-800 border border-yellow-500/50 overflow-hidden">
+                      <img
+                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-neutral-900 border border-white/10 rounded-xl shadow-xl overflow-hidden invisible opacity-0 group-hover/menu:visible group-hover/menu:opacity-100 transition-all transform origin-top-right z-50">
+                    <div className="py-1">
+                      <button
+                        onClick={() => onNavigate?.("profile")}
+                        className="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors flex items-center gap-2"
+                      >
+                        <User className="w-4 h-4" />
+                        My Profile
+                      </button>
+
+                      <div className="h-px bg-white/5 my-1" />
+
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-white/5 hover:text-red-300 transition-colors flex items-center gap-2"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <Button
@@ -127,21 +152,21 @@ export function Header({ onSearch, onNavigate }: HeaderProps) {
         </div>
       </header>
 
-      <LoginModal 
-        isOpen={isLoginOpen} 
-        onClose={() => setLoginOpen(false)} 
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setLoginOpen(false)}
         switchToRegister={() => {
-            setLoginOpen(false);
-            setRegisterOpen(true);
+          setLoginOpen(false);
+          setRegisterOpen(true);
         }}
       />
 
-      <RegisterModal 
-        isOpen={isRegisterOpen} 
-        onClose={() => setRegisterOpen(false)} 
+      <RegisterModal
+        isOpen={isRegisterOpen}
+        onClose={() => setRegisterOpen(false)}
         switchToLogin={() => {
-            setRegisterOpen(false);
-            setLoginOpen(true);
+          setRegisterOpen(false);
+          setLoginOpen(true);
         }}
       />
     </>

@@ -60,7 +60,7 @@ export function MovieDetail({
       const status = await checkIsFavorite(id);
       setIsFavorite(status);
     };
-    
+
     setIsLoadingDetails(true);
     fetch(`http://localhost:8080/api/movies/${id}/details`)
       .then(res => res.json())
@@ -72,7 +72,7 @@ export function MovieDetail({
         console.error("Błąd pobierania detali: ", err);
         setIsLoadingDetails(false);
       });
-    
+
     checkStatus();
   }, [id]);
 
@@ -84,22 +84,22 @@ export function MovieDetail({
     ? `${Math.floor(extraData.runtime / 60)}h ${extraData.runtime % 60}m`
     : runtime;
 
-  const realCast = extraData?.credits?.cast?.slice(0,12) || [];
+  const realCast = extraData?.credits?.cast?.slice(0, 12) || [];
 
   const handleToggleFavourite = async () => {
     setIsLoadingFav(true);
-    try{
-      if(isFavorite){
+    try {
+      if (isFavorite) {
         await removeFromFavorites(id);
         setIsFavorite(false);
-      }else{
+      } else {
         await addToFavorites(id);
         setIsFavorite(true);
       }
-    }catch(error){
+    } catch (error) {
       console.error("blad zmiany statusu ulubionych: ", error);
       alert("musisz byc zalogowany");
-    }finally{
+    } finally {
       setIsLoadingFav(false);
     }
   }
@@ -163,8 +163,8 @@ export function MovieDetail({
 
               { }
               <div className="flex gap-3 flex-wrap">
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="gap-2 bg-[#f5c518] text-black hover:bg-[#e5b50f] border border-[#f5c518] shadow-md"
                   onClick={() => trailer && window.open(`https://www.youtube.com/watch?v=${trailer.key}`, "_blank")}
                   disabled={!trailer}
@@ -181,11 +181,10 @@ export function MovieDetail({
                   variant="outline"
                   onClick={handleToggleFavourite}
                   disabled={isLoadingFav}
-                  className={`gap-2 border transition-all ${
-                    isFavorite
+                  className={`gap-2 border transition-all ${isFavorite
                       ? "bg-red-500/20 border-red-500 text-red-500 hover:bg-red-500/30" // Styl gdy polubione
                       : "bg-white/10 border-white/20 text-white hover:bg-white/20"       // Styl domyślny
-                  }`}
+                    }`}
                 >
                   <Heart className={`h-5 w-5 ${isFavorite ? "fill-current" : ""}`} />
                 </Button>
@@ -213,23 +212,23 @@ export function MovieDetail({
 
             { }
             {realCast.length > 0 && (
-            <section className="mb-10">
-              <h2 className="text-white mb-6 text-2xl font-bold">Cast</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                {realCast.map((actor: any) => (
-                  <div key={actor.id} className="group text-center">
-                    <div className="relative overflow-hidden rounded-xl mb-3 aspect-[2/3] ring-1 ring-white/10 group-hover:ring-yellow-500/50 transition-all">
-                      <img 
-                        src={actor.profile_path 
-                          ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` 
-                          : "https://placehold.co/185x278?text=No+Photo"} 
-                        alt={actor.name}
-                        className="h-full w-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-300"
-                      />
+              <section className="mb-10">
+                <h2 className="text-white mb-6 text-2xl font-bold">Cast</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                  {realCast.map((actor: any) => (
+                    <div key={actor.id} className="group text-center">
+                      <div className="relative overflow-hidden rounded-xl mb-3 aspect-[2/3] ring-1 ring-white/10 group-hover:ring-yellow-500/50 transition-all">
+                        <img
+                          src={actor.profile_path
+                            ? `https://image.tmdb.org/t/p/w185${actor.profile_path}`
+                            : "https://placehold.co/185x278?text=No+Photo"}
+                          alt={actor.name}
+                          className="h-full w-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-300"
+                        />
+                      </div>
+                      <p className="text-white text-sm font-semibold truncate">{actor.name}</p>
+                      <p className="text-white/50 text-[11px] truncate">{actor.character}</p>
                     </div>
-                    <p className="text-white text-sm font-semibold truncate">{actor.name}</p>
-                    <p className="text-white/50 text-[11px] truncate">{actor.character}</p>
-                  </div>
                   ))}
                 </div>
               </section>

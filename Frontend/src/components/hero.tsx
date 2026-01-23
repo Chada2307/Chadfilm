@@ -18,7 +18,7 @@ interface HeroProps {
 }
 
 export function Hero({ movie, onInfoClick }: HeroProps) {
-  
+
   const [isFavorite, setIsFavorite] = useState(false);
   const [isLoadingFav, setIsLoadingFav] = useState(false);
 
@@ -30,7 +30,7 @@ export function Hero({ movie, onInfoClick }: HeroProps) {
 
   const handleToggleFavorite = async () => {
     if (!movie) return;
-    
+
     setIsLoadingFav(true);
     try {
       if (isFavorite) {
@@ -58,9 +58,9 @@ export function Hero({ movie, onInfoClick }: HeroProps) {
 
   return (
     <div className="relative h-[70vh] min-h-[600px] w-full overflow-hidden bg-black">
-      
+
       {/* Background Image */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-top transition-all duration-1000 ease-in-out"
         style={{
           backgroundImage: `url('${movie.imageUrl}')`
@@ -73,24 +73,24 @@ export function Hero({ movie, onInfoClick }: HeroProps) {
       {/* Content */}
       <div className="container mx-auto px-4 relative h-full flex items-center z-10">
         <div className="max-w-2xl animate-in fade-in slide-in-from-bottom-10 duration-700">
-          
+
           {/* Badges */}
           <div className="flex items-center gap-2 mb-4">
             <Badge variant="secondary" className="bg-yellow-500/20 text-yellow-500 border-yellow-500/50">
               Featured
             </Badge>
             <Badge variant="outline" className="rounded-full bg-black/40 text-white tracking-wide shadow-lg ring-1 ring-white/20 backdrop-blur-sm">
-               {movie.year || "2024"}
+              {movie.year || "2024"}
             </Badge>
             <Badge variant="outline" className="rounded-full bg-black/40 text-white tracking-wide shadow-lg ring-1 ring-white/20 backdrop-blur-sm">
-               {movie.genre || "Movie"}
+              {movie.genre || "Movie"}
             </Badge>
           </div>
 
           <h1 className="text-5xl md:text-7xl mb-4 text-white font-bold tracking-tight drop-shadow-xl leading-tight">
             {movie.title}
           </h1>
-          
+
           {/* Info Line */}
           <div className="flex items-center gap-4 mb-6">
             <div className="flex items-center gap-1">
@@ -113,28 +113,27 @@ export function Hero({ movie, onInfoClick }: HeroProps) {
               <Play className="h-5 w-5 fill-black" />
               Watch Trailer
             </Button>
-            
-            <Button 
-                size="lg" 
-                variant="outline" 
-                onClick={onInfoClick}
-                className="gap-2 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 transition-transform hover:scale-105"
+
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={onInfoClick}
+              className="gap-2 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 transition-transform hover:scale-105"
             >
               <Info className="h-5 w-5" />
               More Info
             </Button>
-            
+
             {/* 👇 4. NOWY PRZYCISK MY LIST (SERDUSZKO) */}
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               variant="outline"
               onClick={handleToggleFavorite}
               disabled={isLoadingFav}
-              className={`gap-2 backdrop-blur-sm transition-all duration-300 hover:scale-105 ${
-                isFavorite 
+              className={`gap-2 backdrop-blur-sm transition-all duration-300 hover:scale-105 ${isFavorite
                   ? "bg-red-500/20 border-red-500 text-red-500 hover:bg-red-500/30" // Styl gdy aktywne
                   : "bg-white/10 border-white/20 text-white hover:bg-white/20"       // Styl domyślny
-              }`}
+                }`}
             >
               {/* Ikona zmienia się w wypełnioną */}
               <Heart className={`h-5 w-5 ${isFavorite ? "fill-current" : ""}`} />

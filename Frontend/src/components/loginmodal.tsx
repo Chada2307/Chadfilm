@@ -11,12 +11,12 @@ interface LoginModalProps {
 
 export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, switchToRegister }) => {
 
-    const[username, setUsername] = React.useState("");
-    const[password, setPassword] = React.useState("");
-    const[error, setError] = React.useState<string | null>(null);
+    const [username, setUsername] = React.useState("");
+    const [password, setPassword] = React.useState("");
+    const [error, setError] = React.useState<string | null>(null);
 
     useEffect(() => {
-        if(!open) {
+        if (!open) {
             setError(null);
             setUsername("");
             setPassword("");
@@ -27,10 +27,10 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, switchT
         e.preventDefault();
         setError(null);
 
-        try{
+        try {
             const res = await loginRequest(username, password);
             localStorage.setItem("auth_token", res.token);
-            if(res.user?.username){
+            if (res.user?.username) {
                 localStorage.setItem("user", res.user.username);
             } else {
                 localStorage.setItem("user", username);
@@ -44,10 +44,10 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, switchT
 
     if (!isOpen) return null;
 
-  return (
+    return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={onClose}>
             <div className="relative mx-4 w-full max-w-md rounded-3xl border border-white/10 bg-neutral-950/95 px-10 py-10 text-neutral-100 shadow-2xl shadow-black/80" onClick={(e) => e.stopPropagation()}>
-                
+
                 {/* Close Button */}
                 <button onClick={onClose} className="absolute right-6 top-6 rounded-full p-2 hover:bg-white/10 transition-all">
                     <X className="h-5 w-5 text-neutral-400" />
