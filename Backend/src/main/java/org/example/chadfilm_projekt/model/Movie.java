@@ -32,6 +32,9 @@ public class Movie {
     @Column(name = "PosterURL")
     private String posterUrl;
 
+    @Column(name = "BackdropURL")
+    private String backdropUrl;
+
     @Column(name = "TmdbID", unique = true)
     private Long tmdbId;
 
@@ -47,6 +50,14 @@ public class Movie {
             inverseJoinColumns = @JoinColumn(name = "GenreID")
     )
     private Set<Genre> genres;
+
+    public String getBackdropUrl() {
+        return backdropUrl;
+    }
+
+    public void setBackdropUrl(String backdropUrl) {
+        this.backdropUrl = backdropUrl;
+    }
 
     public Integer getMovieId() {
         return movieId;

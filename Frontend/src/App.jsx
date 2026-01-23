@@ -46,6 +46,7 @@ function App() {
             runtime: "N/A", 
             genre: "Movie", 
             imageUrl: movie.posterUrl || "https://placehold.co/600x900?text=No+Image",
+            backdropUrl: movie.backdropUrl || "https://placehold.co/600x900?text=No+Image",
             plot: movie.description || "Brak opisu."
           }));
           
@@ -78,6 +79,7 @@ function App() {
             runtime: "N/A",
             genre: "Movie",
             imageUrl: movie.posterUrl || "https://placehold.co/600x900?text=No+Image",
+            backdropUrl: movie.backdropUrl || "https://placehold.co/600x900?text=No+Image",
             plot: movie.description
           }));
           setPagedMovies(mapped);
@@ -112,7 +114,7 @@ function App() {
           
           onClose={() => setSelectedMovie(null)}
           
-          backdropUrl={selectedMovie.imageUrl}
+          backdropUrl={selectedMovie.backdropUrl}
           plot={selectedMovie.plot}
           cast={[
 

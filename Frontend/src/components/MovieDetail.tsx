@@ -122,7 +122,7 @@ export function MovieDetail({
           <ImageWithFallback
             src={backdropUrl || imageUrl}
             alt={title}
-            className="h-full w-full object-cover"
+            className="h-[60vh] w-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent" />

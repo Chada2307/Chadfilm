@@ -19,9 +19,15 @@ public class TmdbMovieResult {
     @JsonProperty("poster_path")
     private String posterPath;
 
+    @JsonProperty("backdrop_path")
+    private String backdropPath;
+
     @JsonProperty("genre_ids")
     private List<Integer> genreIds;
 
+
+    public String getBackdropPath() {return backdropPath;}
+    public void setBackdropPath(String backdropPath) {this.backdropPath = backdropPath;}
     public Long getTmdbId() {return tmdbId;}
     public void setTmdbId(Long tmdbId) {this.tmdbId = tmdbId;}
     public String getTitle() {return title;}

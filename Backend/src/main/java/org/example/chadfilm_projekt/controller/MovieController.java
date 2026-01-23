@@ -34,7 +34,7 @@ public class MovieController {
     }
     //na windowsie nie wiem czemu musialem zmienic na GetMapping??
     @PostMapping("/import")
-    public ResponseEntity<String> importMovies(@RequestParam(defaultValue = "1") int pages) {
+    public ResponseEntity<String> importMovies(@RequestParam(defaultValue = "50") int pages) {
         tmdbService.importPopularMovies(pages);
         return ResponseEntity.ok("zaimporotwalim filmy na " + (pages * 20) + " tytulow");
     }

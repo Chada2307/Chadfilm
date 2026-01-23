@@ -77,6 +77,9 @@ public class TmdbService {
         if (dto.getPosterPath() != null) {
             movie.setPosterUrl(imageBaseUrl + dto.getPosterPath());
         }
+        if (dto.getBackdropPath() != null) {
+            movie.setBackdropUrl(imageBaseUrl + dto.getBackdropPath());
+        }
 
         if (dto.getReleaseDate() != null && !dto.getReleaseDate().isEmpty()) {
             try {
