@@ -1,8 +1,20 @@
-import { User, Film, Star, MessageSquare, ChevronLeft, ChevronRight } from "lucide-react";
+import { User, Film, Star, MessageSquare, ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { getMyList } from "../api/favorites";
 import { MovieCard } from "./moviecard";
 import { Movie } from "../../types";
+
+interface Review {
+  id: number;
+  rating: number;
+  comment: string;
+  createdAt?: string;
+  movie: {
+    title: string;
+    posterUrl: string;
+    movieId: number;
+  };
+}
 
 interface ProfileProps {
   username?: string;
@@ -14,10 +26,13 @@ export function Profile({ username = "User", onNavigate, onMovieClick }: Profile
   const [user, setUser] = useState(username);
   const [myList, setMyList] = useState<Movie[]>([]);
   const [loadingList, setLoadingList] = useState(true);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loadingReviews, setLoadingReviews] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-
+  
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
+    const currentUser = storedUser || username;
     if (storedUser) {
       setUser(storedUser);
     }
@@ -42,7 +57,18 @@ export function Profile({ username = "User", onNavigate, onMovieClick }: Profile
         console.error("Error fetching my list:", err);
         setLoadingList(false);
       });
-  }, []);
+      setLoadingReviews(true);
+    fetch(`http://localhost:8080/api/reviews/user/${currentUser}`)
+      .then(res => res.json())
+      .then(data => {
+        setReviews(data);
+        setLoadingReviews(false);
+      })
+      .catch(err => {
+        console.error("Error fetching user reviews:", err);
+        setLoadingReviews(false);
+      });
+  }, [username]);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
@@ -89,13 +115,14 @@ export function Profile({ username = "User", onNavigate, onMovieClick }: Profile
                   <span className="text-gray-400">Movies Watched</span>
                   <span className="font-medium">{myList.length}</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Reviews</span>
-                  <span className="font-medium">0</span>
-                </div>
+                
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Comments</span>
                   <span className="font-medium">0</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Reviews</span>
+                  <span className="font-medium">{reviews.length}</span>
                 </div>
               </div>
             </div>
@@ -178,12 +205,57 @@ export function Profile({ username = "User", onNavigate, onMovieClick }: Profile
             <section>
               <div className="flex items-center gap-3 mb-6">
                 <MessageSquare className="w-6 h-6 text-yellow-500" />
-                <h2 className="text-2xl font-bold">Reviews</h2>
+                <h2 className="text-2xl font-bold">Your Reviews <span className="text-gray-500 text-lg font-normal ml-2">({reviews.length})</span></h2>
               </div>
 
-              <div className="bg-white/5 rounded-xl border border-white/10 p-8 text-center min-h-[150px] flex flex-col items-center justify-center">
-                <p className="text-gray-500">You haven't written any reviews yet.</p>
-              </div>
+              {loadingReviews ? (
+                 <div className="text-center text-gray-500 py-10">Loading reviews...</div>
+              ) : reviews.length > 0 ? (
+                <div className="grid gap-4">
+                  {reviews.map((review) => (
+                    <div key={review.id} className="bg-white/5 rounded-xl border border-white/10 p-4 flex gap-4 hover:bg-white/10 transition-colors">
+                      {/* Miniaturka filmu */}
+                      <div className="flex-shrink-0 w-16 h-24 rounded-lg overflow-hidden bg-neutral-800">
+                         {review.movie && (
+                            <img 
+                              src={review.movie.posterUrl || "https://placehold.co/100x150?text=No+Img"} 
+                              alt={review.movie.title} 
+                              className="w-full h-full object-cover"
+                            />
+                         )}
+                      </div>
+                      
+                      {/* Treść recenzji */}
+                      <div className="flex-grow">
+                         <div className="flex justify-between items-start mb-1">
+                            <h4 className="font-bold text-lg text-white">
+                                {review.movie ? review.movie.title : "Unknown Movie"}
+                            </h4>
+                            <div className="flex items-center gap-1 bg-black/40 px-2 py-1 rounded text-yellow-500 text-sm font-bold">
+                               <Star className="w-3 h-3 fill-yellow-500" />
+                               {review.rating}/10
+                            </div>
+                         </div>
+                         
+                         {review.createdAt && (
+                           <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
+                             <Calendar className="w-3 h-3" />
+                             {new Date(review.createdAt).toLocaleDateString()}
+                           </div>
+                         )}
+
+                         <p className="text-gray-300 text-sm leading-relaxed">
+                            "{review.comment}"
+                         </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-white/5 rounded-xl border border-white/10 p-8 text-center min-h-[150px] flex flex-col items-center justify-center">
+                  <p className="text-gray-500">You haven't written any reviews yet.</p>
+                </div>
+              )}
             </section>
 
           </div>

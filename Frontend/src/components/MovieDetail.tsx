@@ -4,6 +4,7 @@ import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { addToFavorites, checkIsFavorite, removeFromFavorites } from "../api/favorites";
+import { StarRating } from "./StarRating";
 
 interface Cast {
   name: string;
@@ -11,11 +12,13 @@ interface Cast {
 }
 
 interface Review {
-  id: string;
-  author: string;
+  id: number;
+  user: {
+    username: string;
+  };
   rating: number;
   comment: string;
-  date: string;
+  //date: string; narazie bez
 }
 
 interface MovieDetailProps {
@@ -46,7 +49,6 @@ export function MovieDetail({
   director,
   cast,
   plot,
-  reviews,
   onClose
 }: MovieDetailProps) {
 
@@ -54,6 +56,9 @@ export function MovieDetail({
   const [isLoadingFav, setIsLoadingFav] = useState(false);
   const [extraData, setExtraData] = useState<any>(null);
   const [isLoadingDetails, setIsLoadingDetails] = useState(true);
+  const [userRating, setUserRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [reviews, setReviews] = useState<any[]>([]);
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -72,10 +77,45 @@ export function MovieDetail({
         console.error("Błąd pobierania detali: ", err);
         setIsLoadingDetails(false);
       });
-
+    fetch(`http://localhost:8080/api/reviews/movie/${id}`)
+      .then(res => res.json())
+      .then(data => setReviews(data));
     checkStatus();
   }, [id]);
 
+  const submitReview = async () => {
+    const token = localStorage.getItem("auth_token");
+    if (!token) return alert("Musisz być zalogowany, aby oceniać!");
+
+    try {
+      const res = await fetch(`http://localhost:8080/api/reviews/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ rating: userRating, comment })
+      });
+
+      if (res.ok) {
+        alert("Dzięki za ocenę!");
+        
+        setComment("");
+        setUserRating(0);
+
+        fetch(`http://localhost:8080/api/reviews/movie/${id}`)
+          .then(res => res.json())
+          .then(data => setReviews(data));
+          
+      } else {
+        alert("Wystąpił błąd podczas zapisywania oceny.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Błąd połączenia z serwerem.");
+    }
+  };
+  
   const trailer = extraData?.videos?.results?.find(
     (v: any) => v.type === "Trailer" && v.site === "YouTube"
   );
@@ -234,7 +274,42 @@ export function MovieDetail({
               </section>
             )}
           </div>
+          <section className="mt-12 border-t border-white/10 pt-8">
+            <h2 className="text-2xl font-bold mb-6 text-white">Twoja opinia</h2>
+            <div className="bg-white/5 p-6 rounded-xl border border-white/10">
+              <p className="mb-4 text-gray-400 font-medium">Jak oceniasz ten film?</p>
+              <StarRating rating={userRating} setRating={setUserRating} />
+              
+              <textarea
+                className="w-full mt-4 bg-black/40 border border-white/10 rounded-lg p-3 text-white focus:border-yellow-500 outline-none transition-all"
+                placeholder="Napisz kilka słów o filmie (opcjonalnie)..."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
+              
+              <Button onClick={submitReview} className="mt-4 bg-yellow-500 text-black font-bold hover:bg-yellow-400">
+                Opublikuj ocenę
+              </Button>
+            </div>
 
+            {/* Lista innych opinii */}
+            <div className="mt-10 space-y-6">
+              <h3 className="text-xl font-bold text-white">Recenzje społeczności</h3>
+              {reviews.length === 0 ? (
+                <p className="text-gray-500 italic">Bądź pierwszym, który oceni ten film!</p>
+              ) : (
+                reviews.map((rev) => (
+                  <div key={rev.id} className="border-b border-white/5 pb-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-yellow-500 font-bold">{rev.user.username}</span>
+                      <StarRating rating={rev.rating} interactive={false} />
+                    </div>
+                    <p className="text-gray-300">{rev.comment}</p>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
           { }
           <div className="lg:col-span-1">
             <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10 sticky top-4">
