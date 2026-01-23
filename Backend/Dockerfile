@@ -9,7 +9,7 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 
-COPY --from=build /target/*.jar app.jar
+COPY --from=build /app/target/*.jar app.jar
 
 ENV JAVA_OPTS="-Xmx350m -Xms150m"
 EXPOSE 8080
