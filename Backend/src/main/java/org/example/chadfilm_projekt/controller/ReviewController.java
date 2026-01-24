@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -33,8 +34,12 @@ public class ReviewController {
         review.setMovie(movie);
         review.setRating(dto.getRating());
         review.setComment(dto.getComment());
+        review.setCreatedAt(LocalDateTime.now()); // Odśwież datę
 
         reviewRepository.save(review);
+
+        updateMovieRating(movie);
+
         return ResponseEntity.ok("ocena zapisana");
     }
 
@@ -46,4 +51,23 @@ public class ReviewController {
     public List<Review> getUserReviews(@PathVariable String username) {
         return reviewRepository.findAllByUserUsername(username);
     }
+
+    private void updateMovieRating(Movie movie) {
+        List<Review> reviews = reviewRepository.findAllByMovieMovieId(movie.getMovieId());
+        if (reviews.isEmpty()) {
+            movie.setVoteAverage(0.0);
+            movie.setVoteCount(0);
+        }else{
+            double average = reviews.stream()
+                    .mapToInt(Review::getRating)
+                    .average()
+                    .orElse(0.0);
+            double roundedAverage = Math.round(average * 10.0) /10.0;
+
+            movie.setVoteAverage(roundedAverage);
+            movie.setVoteCount(reviews.size());
+        }
+        movieRepository.save(movie);
+    }
+
 }
