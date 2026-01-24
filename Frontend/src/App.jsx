@@ -34,7 +34,7 @@ function App() {
 
     const url = searchQuery
       ? `${API_URL}/api/movies?query=${searchQuery}`
-      : "http://localhost:8080/api/movies";
+      : `${API_URL}/api/movies`;
 
       fetch(url)
         .then((res) => res.json())
