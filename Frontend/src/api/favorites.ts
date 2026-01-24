@@ -13,7 +13,7 @@ export const checkIsFavorite = async (movieId: number | string) => {
     if(!token) return false;
 
     try{
-        const res = await fetch(`${API_URL}/check/${movieId}`, {
+        const res = await fetch(`${API_URL}/api/favorites/check/${movieId}`, {
             method: "GET",
             headers: getAuthHeaders()
         });
@@ -26,7 +26,7 @@ export const checkIsFavorite = async (movieId: number | string) => {
 };
 
 export const addToFavorites = async (movieId: number | string) => {
-    const res = await fetch(`${API_URL}/${movieId}`, {
+    const res = await fetch(`${API_URL}/api/favorites/${movieId}`, {
         method: "POST",
         headers: getAuthHeaders()
     });
@@ -34,7 +34,7 @@ export const addToFavorites = async (movieId: number | string) => {
 }
 
 export const removeFromFavorites = async (movieId: number | string) => {
-    const res = await fetch(`${API_URL}/${movieId}`,{
+    const res = await fetch(`${API_URL}/api/favorites/${movieId}`,{
         method: "DELETE",
         headers: getAuthHeaders()
     });
@@ -42,7 +42,7 @@ export const removeFromFavorites = async (movieId: number | string) => {
 };
 
 export const getMyList = async () => {
-    const res = await fetch(API_URL, {
+    const res = await fetch(`${API_URL}/api/favorites`, {
         method: "GET",
         headers: getAuthHeaders()
     });
