@@ -39,9 +39,10 @@ public class Movie {
     private Long tmdbId;
 
     @Column(name = "VoteAverage")
-    private Double voteAverage;
+    private Double voteAverage = 0.0;
 
-
+    @Column(name="voteCount")
+    private Integer voteCount = 0;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -50,6 +51,14 @@ public class Movie {
             inverseJoinColumns = @JoinColumn(name = "GenreID")
     )
     private Set<Genre> genres;
+
+    public Integer getVoteCount() {
+        return voteCount;
+    }
+
+    public void setVoteCount(Integer voteCount) {
+        this.voteCount = voteCount;
+    }
 
     public String getBackdropUrl() {
         return backdropUrl;
@@ -126,7 +135,7 @@ public class Movie {
     public Long getTmdbId() { return tmdbId; }
     public void setTmdbId(Long tmdbId) { this.tmdbId = tmdbId; }
 
-    public Double getVoteAverage() { return voteAverage; }
+    public Double getVoteAverage() { return voteAverage != null ? voteAverage : 0.0; }
     public void setVoteAverage(Double voteAverage) { this.voteAverage = voteAverage; }
 
 }

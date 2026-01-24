@@ -63,7 +63,7 @@ export function MovieSection({ title, movies, onMovieClick, onSeeAll }: MovieSec
           {movies.map((movie) => (
             <div 
               key={movie.id} 
-              className="min-w-[160px] sm:min-w-[200px] md:min-w-[240px] snap-start"
+              className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 snap-start"
             >
               <MovieCard
                 title={movie.title}

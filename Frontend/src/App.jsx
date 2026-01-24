@@ -45,7 +45,7 @@ function App() {
             title: movie.title,
             year: movie.releaseDate ? new Date(movie.releaseDate).getFullYear().toString() : "N/A",
             rating: movie.voteAverage || 0,
-            runtime: "N/A", 
+            runtime: formatRuntime(movie.runtime), 
             genre: "Movie", 
             imageUrl: movie.posterUrl || "https://placehold.co/600x900?text=No+Image",
             backdropUrl: movie.backdropUrl || "https://placehold.co/600x900?text=No+Image",
@@ -78,7 +78,7 @@ function App() {
             title: movie.title,
             year: movie.releaseDate ? new Date(movie.releaseDate).getFullYear().toString() : "N/A",
             rating: movie.voteAverage || 0,
-            runtime: "N/A",
+            runtime: formatRuntime(movie.runtime),
             genre: "Movie",
             imageUrl: movie.posterUrl || "https://placehold.co/600x900?text=No+Image",
             backdropUrl: movie.backdropUrl || "https://placehold.co/600x900?text=No+Image",
@@ -94,6 +94,13 @@ function App() {
         });
     }
   }, [currentView, currentPage]);
+
+  const formatRuntime = (minutes) => {
+    if (!minutes || minutes === 0) return null;
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    return `${h}h ${m}m`;
+  };
 
   return (
     <div className="min-h-screen bg-neutral-950 relative text-white">
@@ -202,8 +209,8 @@ function App() {
                 {!searchQuery && (
                   <MovieSection
                     title="Top Rated"
-                    movies={movies.slice(0, 10)}
-                    //movies={movies.filter(m => m.rating > 7).slice(0, 5)}
+                    //movies={movies.slice(0, 10)}
+                    movies={movies.filter(m => m.rating > 7).slice(0, 5)}
                     onMovieClick={setSelectedMovie}
                     onSeeAll={() => openSeeAll("Top Rated")}
                   />

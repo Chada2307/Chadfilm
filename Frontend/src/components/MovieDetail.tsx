@@ -60,6 +60,7 @@ export function MovieDetail({
   const [userRating, setUserRating] = useState(0);
   const [comment, setComment] = useState("");
   const [reviews, setReviews] = useState<any[]>([]);
+  const [dbMovieInfo, setDbMovieInfo] = useState<any>(null);
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -81,6 +82,11 @@ export function MovieDetail({
     fetch(`${API_URL}/api/reviews/movie/${id}`)
       .then(res => res.json())
       .then(data => setReviews(data));
+
+    fetch(`${API_URL}/api/movies/${id}`)
+      .then(res => res.json())
+      .then(data => setDbMovieInfo(data))
+      .catch(err => console.error("Błąd pobierania ratingu:", err));
     checkStatus();
   }, [id]);
 
@@ -108,6 +114,10 @@ export function MovieDetail({
           .then(res => res.json())
           .then(data => setReviews(data));
           
+        fetch(`${API_URL}/api/movies/${id}`)
+          .then(res => res.json())
+          .then(data => setDbMovieInfo(data));
+
       } else {
         alert("Wystąpił błąd podczas zapisywania oceny.");
       }
@@ -198,7 +208,7 @@ export function MovieDetail({
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4" />
-                  <span>{runtime}</span>
+                  <span>{realRuntime}</span>
                 </div>
               </div>
 
@@ -343,7 +353,7 @@ export function MovieDetail({
                   <dt className="text-sm text-white/50 mb-1">Rating</dt>
                   <dd className="flex items-center gap-2 text-white">
                     <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                    {rating > 0 ? `${rating.toFixed(1)}/10` : "Not Rated"}
+                    {dbMovieInfo?.chadScore ? dbMovieInfo.chadScore.toFixed(1) : "N/A"}
                   </dd>
                 </div>
               </div>

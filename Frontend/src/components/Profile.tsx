@@ -157,7 +157,7 @@ export function Profile({ username = "User", onNavigate, onMovieClick }: Profile
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                   >
                     {myList.map(movie => (
-                      <div key={movie.id} className="min-w-[calc(25%-12px)] snap-start">
+                      <div key={movie.id} className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 snap-start">
                         <MovieCard
                           {...movie}
                           onClick={() => onMovieClick?.(movie)}
