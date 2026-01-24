@@ -7,6 +7,7 @@ import { MovieDetail } from "./components/MovieDetail";
 import { MyList } from "./components/MyList";
 import { Profile } from "./components/Profile";
 import { MovieCard } from './components/moviecard';
+const API_URL = import.meta.env.VITE_API_URL;
 
 function App() {
 
@@ -32,7 +33,7 @@ function App() {
     setLoading(true);
 
     const url = searchQuery
-      ? `http://localhost:8080/api/movies?query=${searchQuery}`
+      ? `${API_URL}/api/movies?query=${searchQuery}`
       : "http://localhost:8080/api/movies";
 
       fetch(url)
@@ -69,7 +70,7 @@ function App() {
   useEffect(() => {
     if (currentView === "all-movies") {
       setLoading(true);
-      fetch(`http://localhost:8080/api/movies/paged?page=${currentPage}&size=30`)
+      fetch(`${API_URL}/api/movies/paged?page=${currentPage}&size=30`)
         .then((res) => res.json())
         .then((data) => {
           const mapped = data.content.map(movie => ({

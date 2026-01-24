@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { addToFavorites, checkIsFavorite, removeFromFavorites } from "../api/favorites";
 import { StarRating } from "./StarRating";
+const API_URL = import.meta.env.VITE_API_URL;
 
 interface Cast {
   name: string;
@@ -67,7 +68,7 @@ export function MovieDetail({
     };
 
     setIsLoadingDetails(true);
-    fetch(`http://localhost:8080/api/movies/${id}/details`)
+    fetch(`${API_URL}/api/movies/${id}/details`)
       .then(res => res.json())
       .then(data => {
         setExtraData(data);
@@ -77,7 +78,7 @@ export function MovieDetail({
         console.error("Błąd pobierania detali: ", err);
         setIsLoadingDetails(false);
       });
-    fetch(`http://localhost:8080/api/reviews/movie/${id}`)
+    fetch(`${API_URL}/api/reviews/movie/${id}`)
       .then(res => res.json())
       .then(data => setReviews(data));
     checkStatus();
@@ -88,7 +89,7 @@ export function MovieDetail({
     if (!token) return alert("Musisz być zalogowany, aby oceniać!");
 
     try {
-      const res = await fetch(`http://localhost:8080/api/reviews/${id}`, {
+      const res = await fetch(`${API_URL}/api/reviews/${id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,7 +104,7 @@ export function MovieDetail({
         setComment("");
         setUserRating(0);
 
-        fetch(`http://localhost:8080/api/reviews/movie/${id}`)
+        fetch(`${API_URL}/api/reviews/movie/${id}`)
           .then(res => res.json())
           .then(data => setReviews(data));
           

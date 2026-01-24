@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { getMyList } from "../api/favorites";
 import { MovieCard } from "./moviecard";
 import { Movie } from "../../types";
+const API_URL = import.meta.env.VITE_API_URL;
 
 interface Review {
   id: number;
@@ -58,7 +59,7 @@ export function Profile({ username = "User", onNavigate, onMovieClick }: Profile
         setLoadingList(false);
       });
       setLoadingReviews(true);
-    fetch(`http://localhost:8080/api/reviews/user/${currentUser}`)
+    fetch(`${API_URL}/api/reviews/user/${currentUser}`)
       .then(res => res.json())
       .then(data => {
         setReviews(data);
