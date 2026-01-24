@@ -6,7 +6,7 @@ interface MovieCardProps {
   title: string;
   year: string;
   rating: number;
-  runtime: string;
+  runtime?: string;
   genre: string;
   imageUrl: string;
   onClick?: () => void;
